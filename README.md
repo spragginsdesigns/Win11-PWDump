@@ -72,24 +72,26 @@ Windows Credential Retriever is a PowerShell-based tool designed to extract and 
 Credentials Summary:
 
 === DPAPI ===
-  - C:\Users\Owner\AppData\Local\Microsoft\Vault
-    Error: Exception calling "Unprotect" with "3" argument(s): "Value cannot be null. (Parameter 'encryptedData')"
-  - C:\Users\Owner\AppData\Roaming\Microsoft\Protect
-    Error: Exception calling "Unprotect" with "3" argument(s): "Value cannot be null. (Parameter 'encryptedData')"
+Keys show here
 
 === Registry ===
-  - HKCU:\Software\Google\Chrome\Default\Web Data
-    Error: Cannot find path 'HKCU:\Software\Google\Chrome\Default\' because it does not exist.
-  - HKCU:\Software\Microsoft\Office\16.0\Common\Identity\Identities
-    Error: Cannot find path 'HKCU:\Software\Microsoft\Office\16.0\Common\Identity\' because it does not exist.
-  - HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication
-    DeviceCompatibleWithExternalAuthHardware: 1
-  - HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
-    Auth132: IISSUBA
-  - HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations
-    Password:
-    UserAuthentication: 1
-    fPromptForPassword: 0
+Registry Path and Keys show here
+
+=== Windows Credential Manager ===
+  - Target: ExampleTarget
+    Type: Generic
+    User: exampleUser
+
+=== Windows Vault ===
+  - Resource: SampleResource
+    Identity: sampleIdentity
+
+=== LSA Secrets ===
+  - Secret: ExampleSecret
+
+=== WiFi ===
+  - Profile: SampleProfile
+    Password: SamplePassword
 ```
 
 ## Troubleshooting
